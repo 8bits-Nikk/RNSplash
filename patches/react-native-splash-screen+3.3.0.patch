@@ -1,0 +1,86 @@
+diff --git a/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java b/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java
+index f316efe..4fb4bf8 100644
+--- a/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java
++++ b/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreen.java
+@@ -6,6 +6,7 @@ import android.os.Build;
+ import android.view.WindowManager;
+ 
+ import java.lang.ref.WeakReference;
++import java.util.Objects;
+ 
+ /**
+  * SplashScreen
+@@ -22,7 +23,7 @@ public class SplashScreen {
+     /**
+      * 打开启动屏
+      */
+-    public static void show(final Activity activity, final int themeResId, final boolean fullScreen) {
++    public static void show(final Activity activity, final int themeResId, final boolean fullScreen, final String userType) {
+         if (activity == null) return;
+         mActivity = new WeakReference<Activity>(activity);
+         activity.runOnUiThread(new Runnable() {
+@@ -30,7 +31,13 @@ public class SplashScreen {
+             public void run() {
+                 if (!activity.isFinishing()) {
+                     mSplashDialog = new Dialog(activity, themeResId);
+-                    mSplashDialog.setContentView(R.layout.launch_screen);
++                    if(Objects.equals(userType, "admin")){
++                        mSplashDialog.setContentView(R.layout.launch_screen_admin);
++                    }else if(Objects.equals(userType, "user")){
++                        mSplashDialog.setContentView(R.layout.launch_screen_user);
++                    }else {
++                        mSplashDialog.setContentView(R.layout.launch_screen);
++                    }
+                     mSplashDialog.setCancelable(false);
+                     if (fullScreen) {
+                         setActivityAndroidP(mSplashDialog);
+@@ -46,17 +53,17 @@ public class SplashScreen {
+     /**
+      * 打开启动屏
+      */
+-    public static void show(final Activity activity, final boolean fullScreen) {
++    public static void show(final Activity activity,final String userType, final boolean fullScreen) {
+         int resourceId = fullScreen ? R.style.SplashScreen_Fullscreen : R.style.SplashScreen_SplashTheme;
+ 
+-        show(activity, resourceId, fullScreen);
++        show(activity, resourceId, fullScreen, userType);
+     }
+ 
+     /**
+      * 打开启动屏
+      */
+-    public static void show(final Activity activity) {
+-        show(activity, false);
++    public static void show(final Activity activity, final String userType) {
++        show(activity,userType, false);
+     }
+ 
+     /**
+diff --git a/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreenModule.java b/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreenModule.java
+index e25c6b8..34699af 100644
+--- a/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreenModule.java
++++ b/node_modules/react-native-splash-screen/android/src/main/java/org/devio/rn/splashscreen/SplashScreenModule.java
+@@ -27,7 +27,7 @@ public class SplashScreenModule extends ReactContextBaseJavaModule{
+      */
+     @ReactMethod
+     public void show() {
+-        SplashScreen.show(getCurrentActivity());
++        SplashScreen.show(getCurrentActivity(), "default");
+     }
+ 
+     /**
+diff --git a/node_modules/react-native-splash-screen/android/src/main/res/values/refs.xml b/node_modules/react-native-splash-screen/android/src/main/res/values/refs.xml
+index 9ac5c2e..b6272c2 100644
+--- a/node_modules/react-native-splash-screen/android/src/main/res/values/refs.xml
++++ b/node_modules/react-native-splash-screen/android/src/main/res/values/refs.xml
+@@ -2,5 +2,9 @@
+ <resources>
+     <item type="layout" name="launch_screen">
+         @layout/launch_screen
++    </item> <item type="layout" name="launch_screen_admin">
++        @layout/launch_screen_admin
++    </item> <item type="layout" name="launch_screen_user">
++        @layout/launch_screen_user
+     </item>
+ </resources>
+\ No newline at end of file
