@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
 import {
   SafeAreaView,
@@ -15,17 +14,12 @@ const App = () => {
     SplashScreen.hide();
   });
 
-  const setUsertype = async (userType: string) => {
-    await AsyncStorage.setItem('user-type', userType);
-  };
-
   return (
     <SafeAreaView style={styles.backgroundStyle}>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
           LocalStoreModule.saveData('user-type', 'admin');
-          setUsertype('admin');
         }}>
         <Text style={styles.text}>Admin</Text>
       </TouchableOpacity>
@@ -33,7 +27,6 @@ const App = () => {
         style={styles.button}
         onPress={() => {
           LocalStoreModule.saveData('user-type', 'user');
-          setUsertype('user');
         }}>
         <Text style={styles.text}>User</Text>
       </TouchableOpacity>
@@ -41,7 +34,6 @@ const App = () => {
         style={styles.button}
         onPress={() => {
           LocalStoreModule.saveData('user-type', 'default');
-          setUsertype('default');
         }}>
         <Text style={styles.text}>Default</Text>
       </TouchableOpacity>
